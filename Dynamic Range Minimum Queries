@@ -1,0 +1,102 @@
+#include <bits/stdc++.h>
+#include <iostream>
+#include <unordered_set>
+#include <unordered_map>
+using namespace std;
+
+#define test int t; cin >> t; while(t--)
+#define sz(s) s.size()
+#define li '\n'
+#define all(a) a.begin(), a.end()
+#define rall(a) a.rbegin(), a.rend()
+#define ll long long
+#define F first
+#define S second
+#define pb(a) push_back(a)
+#define pf(a) push_front(a)
+//#define b() back()
+#define P(a) push(a);
+#define fix(a) cout << fixed << setprecision(a);
+#define infi 0x3F3F3F3F
+#define infl 2e18
+#define mem(a, val) memset(a, val, sizeof(a));
+const int mod = 1e9 + 7;
+
+void Both() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	cout.tie(nullptr);
+}
+
+template <class T, class T1>
+struct SQRT {
+	const T N = 2e5 + 5, SQ = 448;
+	int n, q;
+	vector<T1> v;
+	vector<T1> pref;
+	vector<vector<T1>> blocks;
+
+	SQRT() : v(N), pref(SQ), blocks(SQ) {}
+
+	void process() {
+		for (T i = 0; i < n; i++) {
+			blocks[i / SQ].push_back(v[i]);
+			pref[i / SQ] = min(v[i], pref[i / SQ]);
+		}
+	}
+
+	void update(T indx, T1 val) {
+		T i = indx / SQ;
+		T j = indx % SQ;
+		v[indx] = val;
+		blocks[i][j] = val;
+		pref[i] = *min_element(all(blocks[i]));
+	}
+
+	T1 query(T l, T r) {
+		T1 ret = 4e18;
+		while (l <= r) {
+			if (l % SQ == 0 && l + SQ <= r) {
+				ret = min(ret, pref[l / SQ]);
+				l += SQ;
+			}
+			else {
+				ret =min(ret, v[l++]);
+			}
+		}
+		return ret;
+	}
+};
+void solve() {
+	SQRT<int, ll > sq;
+	cin >> sq.n >> sq.q;
+	for (int i = 0; i < sq.n; i++) {
+		cin >> sq.v[i];
+	}
+	fill(all(sq.pref), 4e18);
+	sq.process();
+
+	while (sq.q--) {
+		int x; cin >> x;
+		if (x == 1)
+		{
+			int k;
+			ll u;
+			cin >> k >> u;
+			sq.update(k - 1, u);
+		}
+		else
+		{
+
+		int l, r;
+		cin >> l >> r;
+		cout << sq.query(l - 1, r - 1) << li;
+		}
+	}
+}
+
+int main() {
+	Both();
+	solve();
+	return 0;
+}
