@@ -1,0 +1,95 @@
+#include<bits/stdc++.h>
+#include<iostream>
+#include <unordered_set>
+#include <unordered_map>
+using namespace std;
+#define test int t; cin >> t; while(t--)
+#define sz(s) s.size()
+#define li '\n'
+#define all(a) a.begin(), a.end()
+#define rall(a) a.rbegin(), a.rend()
+#define AllArr(a) begin(a),end(a)
+#define ll long long
+#define F first
+#define S second
+#define pb(a) push_back(a)
+#define pf(a) push_front(a)
+#define f() front()
+//#define b() back()
+#define P(a) push(a);
+#define fix(a) cout << fixed << setprecision(a);
+#define infi 0x3F3F3F3F
+#define infl 2e18
+#define mem(a, val) memset(a, val, sizeof(a));
+const int mod = 1e9 + 7;
+const int N = 2e6 + 6;
+
+void Both() {
+	ios_base::sync_with_stdio(false);
+	cin.tie(nullptr);
+	std::cout.tie(nullptr);
+	//#ifndef ONLINE_JUDGE
+	//    freopen("in.txt", "r", stdin);
+	//    freopen("out.txt", "w", stdout);
+	//#endif
+}
+
+struct DSU
+{
+	vector<int>Parent;
+	vector<int>Size;
+
+	DSU(int Init) {
+		Parent.resize(Init+2, 0);
+		Size.resize(Init+2, 1);
+		iota(all(Parent), 0);
+	}
+	int Leader(int u)// O(Log(N)) Time
+	{
+		if (Parent[u] == u)
+			return u;
+		return Parent[u] = Leader(Parent[u]);
+	}
+	void Union(int u, int v)// --> M unions then the time complexity is (M* log(n))
+	{
+		u = Leader(u);
+		v = Leader(v);
+		if (u == v)return;
+		if (Size[u] > Size[v]) { swap(u, v); }
+		Parent[u] = v;
+		Size[v] += Size[u];
+
+	}
+	int findsize(int u)
+	{
+		return Size[u];
+	}
+};
+
+void solve()
+{
+	DSU dsu(26);
+	int n;
+	cin >> n;
+	string s, t;
+	cin >> s >> t;
+	vector<pair<char, char>>ans;
+	for (int i = 0; i < n; i++)
+	{
+		if (s[i] == t[i])continue;
+		if (dsu.Leader(s[i]-'a') == dsu.Leader(t[i]-'a'))continue;
+		ans.push_back({ s[i],t[i] });
+		dsu.Union(s[i]-'a', t[i]-'a');
+	}
+	cout << ans.size() << li;
+	for (auto [x, y] : ans)
+	{
+		cout << x << ' ' << y << li;
+	}
+}
+int main()
+{
+	Both();
+	solve();
+	return 0;
+}
