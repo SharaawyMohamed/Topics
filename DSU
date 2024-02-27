@@ -40,8 +40,8 @@ struct DSU
 	vector<int>Size;
 
 	DSU(int Init) {
-		Parent.resize(Init+2, 0);
-		Size.resize(Init+2, 1);
+		Parent.resize(Init + 2, 0);
+		Size.resize(Init + 2, 1);
 		iota(all(Parent), 0);
 	}
 	int Leader(int u)// O(Log(N)) Time
@@ -49,6 +49,10 @@ struct DSU
 		if (Parent[u] == u)
 			return u;
 		return Parent[u] = Leader(Parent[u]);
+	}
+	bool Isconnected(int u, int v)
+	{
+		return Leader(u) == Leader(v);
 	}
 	void Union(int u, int v)// --> M unions then the time complexity is (M* log(n))
 	{
@@ -60,31 +64,34 @@ struct DSU
 		Size[v] += Size[u];
 
 	}
-	int findsize(int u)
+	int ComponentSize(int u)
 	{
+		u = Leader(u);
 		return Size[u];
 	}
 };
 
 void solve()
 {
-	DSU dsu(26);
-	int n;
-	cin >> n;
-	string s, t;
-	cin >> s >> t;
-	vector<pair<char, char>>ans;
-	for (int i = 0; i < n; i++)
+	int n, m;
+	cin >> n >> m;
+	DSU dsu(n);
+	for (int i = 1; i <= m; i++)
 	{
-		if (s[i] == t[i])continue;
-		if (dsu.Leader(s[i]-'a') == dsu.Leader(t[i]-'a'))continue;
-		ans.push_back({ s[i],t[i] });
-		dsu.Union(s[i]-'a', t[i]-'a');
+		int x;
+		cin >> x;
+		if (x == 0)continue;
+		int temp; cin >> temp;
+		for (int j = 2; j <= x; j++)
+		{
+			int l; cin >> l;
+			if (!dsu.Isconnected(temp, l)) {
+				dsu.Union(temp, l);
+			}
+		}
 	}
-	cout << ans.size() << li;
-	for (auto [x, y] : ans)
-	{
-		cout << x << ' ' << y << li;
+	for (int i = 1; i <= n; i++) {
+		cout << dsu.ComponentSize(i) << ' ';
 	}
 }
 int main()
